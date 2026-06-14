@@ -12,5 +12,5 @@ export function ArticleJsonLd({ title, description, slug, date }: { title: strin
     publisher: { '@type': 'Organization', name: site.name, url: site.url },
     mainEntityOfPage: { '@type': 'WebPage', '@id': `${site.url}/blog/${slug}` },
   }
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }} />
 }

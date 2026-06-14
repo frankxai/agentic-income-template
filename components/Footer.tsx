@@ -16,7 +16,7 @@ export function Footer() {
               <ul className="mt-3 space-y-2 text-sm">
                 {site.network.map((n) => (
                   <li key={n.url}>
-                    <a href={n.url} className="text-ink hover:text-accent">{n.name}</a>
+                    <a href={n.url} target="_blank" rel="noopener noreferrer" className="text-ink hover:text-accent">{n.name}</a>
                     <span className="text-muted"> — {n.blurb}</span>
                   </li>
                 ))}
@@ -25,7 +25,7 @@ export function Footer() {
           )}
         </div>
         <div className="mt-10 flex flex-col gap-2 border-t border-border pt-6 text-xs text-muted sm:flex-row sm:items-center sm:justify-between">
-          <span>© {new Date().getFullYear()} {site.name}. Built by {site.author}.</span>
+          <span suppressHydrationWarning>© {new Date().getFullYear()} {site.name}. Built by {site.author}.</span>
           <span>Honest tool comparisons. Some links are affiliate links.</span>
         </div>
       </div>

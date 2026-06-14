@@ -72,7 +72,7 @@ export default function Home() {
           <p className="mt-3 max-w-2xl text-muted">Same engine, different angle. Pick the lens that fits how you think about money.</p>
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
             {site.network.map((n) => (
-              <a key={n.url} href={n.url} className="flex items-center justify-between rounded-xl border border-border glass p-5 hover:border-accent">
+              <a key={n.url} href={n.url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-between rounded-xl border border-border glass p-5 hover:border-accent">
                 <div>
                   <div className="font-semibold text-ink">{n.name}</div>
                   <p className="mt-1 text-sm text-muted">{n.blurb}</p>
