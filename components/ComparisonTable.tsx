@@ -11,7 +11,7 @@ export type Row = {
   pick?: boolean
 }
 
-type SortKey = 'tool' | 'price'
+type SortKey = 'tool'
 
 /**
  * The money component: an honest, sortable tool table. The "Try" cell only
@@ -41,7 +41,7 @@ export function ComparisonTable({ rows, caption }: { rows: Row[]; caption?: stri
             <tr className="text-left text-muted">
               <Th onClick={() => toggle('tool')} active={sort === 'tool'} asc={asc}>Tool</Th>
               <th className="px-4 py-3 font-semibold">Verdict</th>
-              <Th onClick={() => toggle('price')} active={sort === 'price'} asc={asc}>Price</Th>
+              <th className="px-4 py-3 font-semibold">Price</th>
               <th className="px-4 py-3 font-semibold">Recurring</th>
               <th className="px-4 py-3 font-semibold">Try</th>
             </tr>
