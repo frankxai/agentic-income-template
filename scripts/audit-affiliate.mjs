@@ -28,4 +28,9 @@ if (!existsSync(script)) {
 const args = process.argv.slice(2)
 const passthrough = args.length ? args : ['--content=./app/blog', '--write']
 const res = spawnSync('node', [script, ...passthrough], { stdio: 'inherit' })
-process.exit(res.status ?? 0)
+if (res.error) {
+  console.error(`✗ failed to run audit engine: ${res.error.message}`)
+  process.exit(1)
+}
+// res.status is null when the child was terminated by a signal — treat as failure.
+process.exit(res.status ?? 1)
