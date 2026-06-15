@@ -10,7 +10,7 @@
     "start": "next start",
     "lint": "next lint",
     "sync:catalog": "node scripts/sync-catalog.mjs",
-    "audit:affiliate": "node ../affiliate-agent-skills/scripts/affiliate-audit.mjs --content=./content --write"
+    "audit:affiliate": "node ../affiliate-agent-skills/scripts/affiliate-audit.mjs --content=./app/blog --write"
   },
   "dependencies": {
     "next": "^16.0.0",
