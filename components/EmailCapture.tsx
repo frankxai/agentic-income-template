@@ -24,6 +24,9 @@ export function EmailCapture({ headline = 'Get the stack that earns', sub = 'One
             type="email"
             required
             placeholder="you@email.com"
+            aria-label="Email address"
+            autoComplete="email"
+            name="email"
             className="flex-1 rounded-lg border border-border bg-bg px-4 py-2.5 text-sm text-ink outline-none focus:border-accent"
           />
           <button type="submit" className="rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-bg hover:opacity-90">
