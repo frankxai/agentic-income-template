@@ -1,3 +1,17 @@
+<!-- GITHUB_VISUALS_START -->
+<p align="center">
+  <img src="assets/github/header.svg" alt="Agentic Income Template - Clone-and-deploy AI-tool comparison starter" width="100%">
+</p>
+
+<details open>
+<summary><strong>How this repo works</strong></summary>
+<p align="center">
+  <img src="assets/github/how-it-works.svg" alt="Agentic Income Template operating map" width="100%">
+</p>
+</details>
+
+<!-- GITHUB_VISUALS_END -->
+
 # Agentic Income Template
 
 A clone-and-deploy starter for an honest AI-tool comparison site that earns recurring affiliate income. The exact shell behind the [agentic-income network](https://github.com/frankxai/affiliate-agent-skills) — genericized so you can make it yours in an afternoon.
