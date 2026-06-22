@@ -27,7 +27,8 @@ if (!existsSync(script)) {
 // Forward any extra args; default to auditing the blog posts in write mode.
 const args = process.argv.slice(2)
 const passthrough = args.length ? args : ['--content=./app/blog', '--write']
-const res = spawnSync('node', [script, ...passthrough], { stdio: 'inherit' })
+// Use process.execPath (the running node binary) rather than relying on 'node' on PATH.
+const res = spawnSync(process.execPath, [script, ...passthrough], { stdio: 'inherit' })
 if (res.error) {
   console.error(`✗ failed to run audit engine: ${res.error.message}`)
   process.exit(1)
