@@ -1,12 +1,19 @@
 <!-- GITHUB_VISUALS_START -->
 <p align="center">
-  <img src="assets/github/header.svg" alt="Agentic Income Template - Clone-and-deploy AI-tool comparison starter" width="100%">
+  <img src="assets/github/header.svg" alt="Agentic Income Template - Clone-and-deploy starter for honest AI-tool comparison sites." width="100%">
 </p>
 
 <details open>
 <summary><strong>How this repo works</strong></summary>
 <p align="center">
   <img src="assets/github/how-it-works.svg" alt="Agentic Income Template operating map" width="100%">
+</p>
+</details>
+
+<details>
+<summary><strong>Build, deploy, verify path</strong></summary>
+<p align="center">
+  <img src="assets/github/build-deploy-verify.svg" alt="Agentic Income Template build deploy verify path" width="100%">
 </p>
 </details>
 

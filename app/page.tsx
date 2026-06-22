@@ -5,34 +5,50 @@ import { EmailCapture } from '@/components/EmailCapture'
 
 export default function Home() {
   const featured = sortedPosts.filter((p) => p.featured)
+  const heroVisual = '/visuals/backplates/website-growth-loop.png'
+  const explainerVisual = '/visuals/income-engine-flow.svg'
 
   return (
     <>
       {/* Hero */}
-      <section className="py-20 sm:py-28">
-        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-accent">Make money with AI agents</p>
-        <h1 className="mt-4 max-w-3xl text-5xl font-extrabold leading-[1.05] tracking-tight text-ink sm:text-6xl">
-          {site.tagline}
-        </h1>
-        <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted">{site.description}</p>
-        <div className="mt-8 flex flex-wrap gap-3">
-          <Link href="/start" className="rounded-lg bg-accent px-6 py-3 font-semibold text-bg hover:opacity-90">
-            Start here →
-          </Link>
-          <Link href="/blog" className="rounded-lg border border-border px-6 py-3 font-semibold text-ink hover:border-accent">
-            See the comparisons
-          </Link>
+      <section className="relative overflow-hidden border-b border-border py-16 sm:py-24">
+        <img
+          src={heroVisual}
+          alt=""
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-65"
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,var(--color-bg)_0%,rgba(7,8,13,0.94)_46%,rgba(7,8,13,0.30)_100%)]" />
+        <div className="relative max-w-3xl">
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-accent">Make money with AI agents</p>
+          <h1 className="mt-4 max-w-[22rem] text-4xl font-extrabold leading-[1.05] tracking-tight text-ink sm:max-w-3xl sm:text-6xl">
+            {site.tagline}
+          </h1>
+          <p className="mt-6 max-w-[22rem] text-lg leading-relaxed text-muted sm:max-w-2xl">{site.description}</p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Link href="/start" className="rounded-lg bg-accent px-6 py-3 font-semibold text-bg hover:opacity-90">
+              Start here →
+            </Link>
+            <Link href="/blog" className="rounded-lg border border-border px-6 py-3 font-semibold text-ink hover:border-accent">
+              See the comparisons
+            </Link>
+          </div>
         </div>
       </section>
 
       {/* The method */}
       <section className="border-t border-border py-16">
-        <h2 className="text-3xl font-bold text-ink">The method, in one sentence</h2>
-        <p className="mt-4 max-w-2xl text-lg text-muted">
+        <h2 className="max-w-[22rem] text-3xl font-bold text-ink sm:max-w-none">The method, in one sentence</h2>
+        <p className="mt-4 max-w-[22rem] text-lg text-muted sm:max-w-2xl">
           The AI tools everyone searches for — ChatGPT, Claude, Midjourney — pay nothing. So we rank for them,
           tell you the honest truth, and point you to the <strong className="text-ink">tools that actually pay recurring</strong> when
           they genuinely beat the alternative. You get the real answer; the system earns when you act on it.
         </p>
+        <img
+          src={explainerVisual}
+          alt="Research, comparison, catalog, email capture, and audit stages in one income engine flow."
+          className="mt-8 w-full rounded-xl border border-border"
+        />
         <div className="mt-8 grid gap-4 sm:grid-cols-3">
           {[
             { n: '01', t: 'Honest comparisons', d: 'Real tool tests in the shape AI search engines cite. The best pick always wins — never the highest payout.' },
