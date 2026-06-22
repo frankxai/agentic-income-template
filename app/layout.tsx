@@ -8,8 +8,15 @@ export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: { default: `${site.name} — ${site.tagline}`, template: `%s · ${site.name}` },
   description: site.description,
-  openGraph: { title: site.name, description: site.description, url: site.url, siteName: site.name, type: 'website' },
-  twitter: { card: 'summary_large_image', title: site.name, description: site.description },
+  openGraph: {
+    title: site.name,
+    description: site.description,
+    url: site.url,
+    siteName: site.name,
+    type: 'website',
+    images: [{ url: '/visuals/opengraph.svg', width: 1200, height: 630, alt: `${site.name} visual system` }],
+  },
+  twitter: { card: 'summary_large_image', title: site.name, description: site.description, images: ['/visuals/opengraph.svg'] },
   robots: { index: true, follow: true },
 }
 

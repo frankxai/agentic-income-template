@@ -1,0 +1,12 @@
+{
+  "version": "2026.06-premium",
+  "generatedAt": "2026-06-22",
+  "site": "Agentic Income Template",
+  "hero": "/visuals/website-growth-loop.svg",
+  "explainer": "/visuals/income-engine-flow.svg",
+  "openGraph": "/visuals/opengraph.svg",
+  "backplates": [
+    "/visuals/backplates/website-growth-loop.png",
+    "/visuals/backplates/income-engine-flow.png"
+  ]
+}
