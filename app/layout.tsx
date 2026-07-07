@@ -3,6 +3,8 @@ import './globals.css'
 import { Nav } from '@/components/Nav'
 import { Footer } from '@/components/Footer'
 import { site } from '@/lib/site'
+import { CatalogProvider } from '@agentic-income/engine/react.js'
+import catalog from '@/data/programs.json'
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -17,9 +19,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
-        <Nav />
-        <main className="mx-auto max-w-5xl px-5">{children}</main>
-        <Footer />
+        <CatalogProvider catalog={catalog}>
+          <Nav />
+          <main className="mx-auto max-w-6xl px-6">{children}</main>
+          <Footer />
+        </CatalogProvider>
       </body>
     </html>
   )

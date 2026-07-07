@@ -10,9 +10,12 @@
     "start": "next start",
     "lint": "next lint",
     "sync:catalog": "node scripts/sync-catalog.mjs",
-    "audit:affiliate": "node scripts/audit-affiliate.mjs"
+    "audit:affiliate": "node scripts/audit-affiliate.mjs",
+    "type-check": "tsc --noEmit",
+    "merge:gate": "npm run type-check"
   },
   "dependencies": {
+    "@agentic-income/engine": "link:../affiliate-agent-skills",
     "next": "^16.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"

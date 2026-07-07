@@ -1,11 +1,9 @@
 import type { MDXComponents } from 'mdx/types'
-import { AffiliateLink } from '@/components/AffiliateLink'
-import { AffiliateDisclosure } from '@/components/AffiliateDisclosure'
-import { ComparisonTable } from '@/components/ComparisonTable'
-import { AnswerBox } from '@/components/AnswerBox'
-import { FaqSection } from '@/components/FaqSection'
+import { AffiliateLink, AffiliateDisclosure, ComparisonTable, AnswerBox, FaqSection } from '@agentic-income/engine/react.js'
 import { ArticleJsonLd } from '@/components/ArticleJsonLd'
 
+// AffiliateLink/AffiliateDisclosure/ComparisonTable read this site's catalog via
+// CatalogProvider (wrapped around the app in app/layout.tsx), not a factory call.
 // Components available inside every .mdx post without an import.
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {

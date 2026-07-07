@@ -4,9 +4,9 @@ import { site } from '@/lib/site'
 export function Nav() {
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 glass">
-      <nav className="mx-auto flex max-w-5xl items-center justify-between px-5 py-3.5">
+      <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3.5">
         <Link href="/" className="flex items-center gap-2 font-bold tracking-tight text-ink">
-          <span className="grid h-7 w-7 place-items-center rounded-lg bg-gradient-to-br from-accent to-accent-2 text-bg">◆</span>
+          <img src="/brand/logo-monogram-3d.jpg" alt="Agentic Income" className="h-7 w-7 object-contain" />
           {site.name}
         </Link>
         <div className="flex items-center gap-5 text-sm text-muted">

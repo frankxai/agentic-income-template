@@ -4,7 +4,7 @@ import { site } from '@/lib/site'
 export function Footer() {
   return (
     <footer className="mt-20 border-t border-border">
-      <div className="mx-auto max-w-5xl px-5 py-10">
+      <div className="mx-auto max-w-6xl px-6 py-10">
         <div className="grid gap-8 sm:grid-cols-2">
           <div>
             <div className="font-bold text-ink">{site.name}</div>
