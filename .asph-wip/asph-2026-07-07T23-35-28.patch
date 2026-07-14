@@ -1,0 +1,1161 @@
+diff --git a/.agent-harness.json b/.agent-harness.json
+new file mode 100644
+index 0000000..60d53ef
+--- /dev/null
++++ b/.agent-harness.json
+@@ -0,0 +1,45 @@
++﻿{
++    "name":  "agentic-income-template",
++    "classification":  "template-study",
++    "owner":  "FrankX AI",
++    "updated":  "2026-06-19",
++    "remote":  "https://github.com/frankxai/agentic-income-template.git",
++    "health":  {
++                   "primaryCheck":  "npm run build",
++                   "manualChecks":  [
++                                        "Review AGENTS.md before edits",
++                                        "Preserve user work and dirty files",
++                                        "Scan public outputs for secrets and private memory"
++                                    ]
++               },
++    "agentGuidance":  {
++                          "readAgentsMd":  true,
++                          "avoidPrivateMemory":  true,
++                          "preserveExistingConventions":  true,
++                          "designTasteKernel":  {
++                                                    "enabled":  true,
++                                                    "root":  "C:\\Users\\frank\\starlight\\repos",
++                                                    "files":  [
++                                                                  "C:\\Users\\frank\\starlight\\repos\\DESIGN_TASTE.md",
++                                                                  "C:\\Users\\frank\\starlight\\repos\\WEB_EXPERIENCE_STANDARD.md",
++                                                                  "C:\\Users\\frank\\starlight\\repos\\MOTION_TASTE_RUBRIC.md",
++                                                                  "C:\\Users\\frank\\starlight\\repos\\MULTI_AGENT_DESIGN_COUNCIL.md",
++                                                                  "C:\\Users\\frank\\starlight\\repos\\VISUAL_QA_GATE.md"
++                                                              ],
++                                                    "appliesTo":  [
++                                                                      "site",
++                                                                      "app",
++                                                                      "landing-page",
++                                                                      "dashboard",
++                                                                      "visual-identity",
++                                                                      "brand",
++                                                                      "motion",
++                                                                      "media",
++                                                                      "social",
++                                                                      "frontend"
++                                                                  ],
++                                                    "motionPlugin":  "motion-design-studio",
++                                                    "visualVerificationRequired":  true
++                                                }
++                      }
++}
+diff --git a/.github/dependabot.yml b/.github/dependabot.yml
+new file mode 100644
+index 0000000..65ad190
+--- /dev/null
++++ b/.github/dependabot.yml
+@@ -0,0 +1,14 @@
++version: 2
++updates:
++  - package-ecosystem: "npm"
++    directory: "/"
++    schedule:
++      interval: "weekly"
++    groups:
++      minor-and-patch:
++        update-types: ["minor", "patch"]
++    open-pull-requests-limit: 5
++  - package-ecosystem: "github-actions"
++    directory: "/"
++    schedule:
++      interval: "weekly"
+diff --git a/AGENTS.md b/AGENTS.md
+new file mode 100644
+index 0000000..4bdbb88
+--- /dev/null
++++ b/AGENTS.md
+@@ -0,0 +1,41 @@
++﻿# Repository Instructions
++
++This repo is part of the FrankX / Starlight / Arcanea agent estate.
++
++## Classification
++
++- Repo: $title
++- Class: $Classification
++- Default health command: $HealthCommand
++- Remote: $Remote
++
++## Agent Rules
++
++- Read this file before making changes.
++- Preserve existing user work and unrelated dirty files.
++- Keep edits scoped to the requested task.
++- Prefer existing repo conventions over new abstractions.
++- Run the health command before handoff when feasible.
++- Do not publish secrets, private memory, credentials, or internal-only strategy.
++
++## Class-Specific Guidance
++
++- Keep changes low-risk and clearly labeled.
++- Do not treat this as production unless the repo is reclassified.
++
++## Handoff
++
++Summarize changed files, validation run, risks, and any follow-up needed.
++
++## Design Taste Kernel
++
++For any site, app, landing page, dashboard, visual identity, brand, motion, media, social, or frontend task, apply the shared Design Taste Kernel before handoff:
++
++- C:\Users\frank\starlight\repos\DESIGN_TASTE.md
++- C:\Users\frank\starlight\repos\WEB_EXPERIENCE_STANDARD.md
++- C:\Users\frank\starlight\repos\MOTION_TASTE_RUBRIC.md
++- C:\Users\frank\starlight\repos\MULTI_AGENT_DESIGN_COUNCIL.md
++- C:\Users\frank\starlight\repos\VISUAL_QA_GATE.md
++
++When motion, scroll, generated media, GIF/video, or premium polish matters, route through the Motion Design Studio plugin/skills and verify the result visually.
++
+diff --git a/app/api/agent/README.md b/app/api/agent/README.md
+new file mode 100644
+index 0000000..df3d8d0
+--- /dev/null
++++ b/app/api/agent/README.md
+@@ -0,0 +1,118 @@
++# agent-earn: the pay-per-call endpoint
++
++This is the "your agent charges per call" starter from the `income-web3` layer —
++the sharpest edge of the `disrupt` lens. Instead of monetizing an audience
++(affiliate, products), this endpoint monetizes what an agent *produces*: it sells
++one call's worth of output for stablecoin, gated by HTTP 402, with no accounts,
++API keys, or invoicing.
++
++## The flow
++
++```
++GET /api/agent/<resource>
++  → 402 Payment Required   { x402: { amount, asset, network, payTo, resource } }
++  ← agent settles on-chain (stablecoin, e.g. USDC)
++GET /api/agent/<resource>  (+ x-payment-proof header)
++  → verifyPayment() checks the settlement
++  → 200 { the resource }   — if verified
++  → 402 again              — if not
++```
++
++`amount` is priced in cents-to-dollars — the unit economics x402 exists for.
++Card rails can't do a $0.10 charge profitably; stablecoin settlement can.
++**Disclose the price before the charge is made** — the 402 response *is* that
++disclosure; don't hide pricing behind a support page.
++
++## What's here right now — dry-run / testnet only
++
++- `lib/agent-earn.ts` — `paymentRequired()`, `verifyPayment()`, `checkSpendGuardrail()`,
++  and the `PaymentTerms` / `PaymentProof` / `SpendPolicy` types.
++- `app/api/agent/[resource]/route.ts` — the gated route. One sample resource
++  (`sample-report`, priced at `$0.10`) is wired in as a placeholder.
++
++**No real wallet spend happens anywhere in this code.** `verifyPayment()` is a
++stub that always returns `{ verified: false, reason: 'verification not wired — testnet stub' }`.
++The route's `payTo` is a zero address placeholder. Nothing here can move real
++money until an operator wires real chain verification and swaps in a real payout
++address — deliberately, not by accident.
++
++## Testing it right now
++
++```bash
++curl -i http://localhost:3000/api/agent/sample-report
++# → 402, body: { "x402": { "amount": "0.10", "asset": "USDC", "network": "base-sepolia", ... } }
++
++curl -i http://localhost:3000/api/agent/sample-report \
++  -H 'x-payment-proof: {"txHash":"0xtest","network":"base-sepolia","amount":"0.10"}'
++# → still 402 today — verifyPayment() is an honest stub, not a demo that fakes success
++```
++
++That second call staying a 402 is correct behavior, not a bug — see "Wiring it
++for real" below.
++
++## The mandatory guardrail: `checkSpendGuardrail()`
++
++Per `income-web3/SKILL.md`, an agent with an unguarded wallet is a liability,
++not an asset. `checkSpendGuardrail()` in `lib/agent-earn.ts` enforces, before
++any spend an *operator's own agent* makes (as the payer, not just as this
++endpoint's seller side):
++
++- a hard **per-transaction cap**
++- a hard **daily cap** — tracked in-memory, best-effort, and explicitly **not
++  durable**: it resets on cold start and isn't shared across instances/regions.
++  Treat it as a speed bump, not a ledger. Back it with a real store (a database
++  row per operator/day) before relying on it for anything that matters.
++- an **allowlist** of exactly what the agent may pay for
++
++Call this guardrail on every outbound spend path before this template's future
++agent-to-agent commerce work goes anywhere near a real wallet.
++
++## Wiring it for real: what to install and where it plugs in
++
++Nothing below is installed. Per the constraints this scaffold was built under,
++these are documented, not added to `package.json`:
++
++- **A chain client** — `viem` or `ethers`, to read the target chain and confirm
++  a transfer actually happened (`npm install viem` or `npm install ethers`).
++- **An x402 facilitator client**, if you'd rather verify through a hosted
++  facilitator than raw RPC — check https://www.x402.org for the current
++  facilitator list (membership includes Coinbase/Circle infra this network
++  already touches).
++- **An agent wallet with policy controls** — e.g. Coinbase Agentic Wallets /
++  AgentCore Payments (launched Feb 2026) for policy-based spending limits and
++  an audit trail on the *paying* side, if this operator's agent is also going
++  to be the one spending, not just the one getting paid.
++
++**The plug-in point for real on-chain verification is `verifyPayment()` in
++`lib/agent-earn.ts`.** That function's doc comment spells out the five things
++a real implementation must check (tx mined/confirmed, amount + asset match,
++recipient matches `payTo`, network matches, and replay protection against
++reusing the same tx hash for multiple calls). Swap the stub body for a real
++chain lookup there; nothing else in this endpoint needs to change shape.
++
++## The hard rules (non-negotiable, not just style)
++
++- **Never a real private key in code, ever.** Not in this repo, not in an env
++  var checked into source, not in a comment "for reference." Custody and keys
++  are the operator's. Treat a key like Frank's `reality.md`: never commit,
++  never transmit.
++- **Never a real spend without the operator's explicit go-ahead for that
++  specific spend.** Testnet and dry-run first, always — this scaffold ships
++  entirely on that side of the line.
++- **No token launches, no "agent coin," no yield/staking promises.** This
++  layer sells services for stablecoin. Speculation is a different, off-thesis
++  business.
++- **Price disclosure before the charge** — the 402 body already does this;
++  don't build a version that charges silently.
++
++## Where this goes next
++
++- Real resource behind the placeholder: swap the `sample-report` stub output
++  for whatever the operator's agent actually produces (a research report, a
++  scored feed, a generated asset) — priced honestly, not as a thin wrapper.
++- Real verification: implement `verifyPayment()` per the TODOs in
++  `lib/agent-earn.ts`.
++- Agent-to-agent commerce: only after the single-endpoint case is earning for
++  real. Two agents transacting to complete a task neither could alone is the
++  frontier case in the design spec — build it once there's a working single
++  payer/payee loop to extend, not before.
+diff --git a/app/api/agent/[resource]/route.ts b/app/api/agent/[resource]/route.ts
+new file mode 100644
+index 0000000..d0e0aa9
+--- /dev/null
++++ b/app/api/agent/[resource]/route.ts
+@@ -0,0 +1,109 @@
++// The pay-per-call endpoint — the "your agent charges for X" starter from
++// agentic-income-skills/skills/income-web3/SKILL.md. An agent requests a resource, gets a 402
++// with payment terms, settles on-chain, then re-requests with proof and gets served.
++//
++// DRY-RUN / TESTNET POSTURE: verifyPayment() in lib/agent-earn.ts is a stub that always
++// returns unverified. No real wallet spend happens anywhere in this file or its helpers —
++// there is no code path here that moves money. Wiring real verification (and therefore real
++// settlement) requires the operator's explicit go-ahead; see app/api/agent/README.md.
++
++import { NextResponse } from 'next/server'
++import {
++  paymentRequired,
++  verifyPayment,
++  type PaymentNetwork,
++  type PaymentProof,
++  type PaymentTerms,
++} from '@/lib/agent-earn'
++import { checkRateLimit, clientKeyFromHeaders } from '@agentic-income/engine'
++
++// Header the agent sends its payment proof in. Not a standardized x402 header name yet —
++// treat this as this template's convention, and confirm against whatever facilitator/spec
++// revision you integrate against in production.
++const PAYMENT_PROOF_HEADER = 'x-payment-proof'
++
++// TODO(production): move pricing/payTo per resource into real config (env vars, a database,
++// or the catalog data this template already loads elsewhere) instead of a hardcoded map.
++// payTo below is a placeholder testnet-style address — never a real operator wallet checked
++// into source. Replace via environment variable, and never commit the value that replaces it.
++const RESOURCE_CATALOG: Record<string, { amount: string; description: string }> = {
++  'sample-report': {
++    amount: '0.10',
++    description: 'Sample report resource — replace with a real priced output before going live.',
++  },
++}
++
++const DEFAULT_NETWORK: PaymentNetwork = 'base-sepolia' // testnet default — see README before changing
++const PLACEHOLDER_PAY_TO = '0x0000000000000000000000000000000000000000' // TODO(production): set via env var, never hardcode a real address here
++
++function buildTerms(resource: string, amount: string): PaymentTerms {
++  return {
++    amount,
++    asset: 'USDC',
++    network: DEFAULT_NETWORK,
++    payTo: PLACEHOLDER_PAY_TO,
++    resource,
++  }
++}
++
++function parseProofHeader(raw: string | null, resource: string): PaymentProof | null {
++  if (!raw) return null
++  try {
++    const parsed = JSON.parse(raw)
++    if (
++      typeof parsed?.txHash === 'string' &&
++      typeof parsed?.network === 'string' &&
++      typeof parsed?.amount === 'string'
++    ) {
++      return {
++        txHash: parsed.txHash,
++        network: parsed.network as PaymentNetwork,
++        resource,
++        amount: parsed.amount,
++      }
++    }
++  } catch {
++    // fall through to null — malformed proof is treated as no proof
++  }
++  return null
++}
++
++export async function GET(req: Request, { params }: { params: Promise<{ resource: string }> }) {
++  const { resource } = await params
++
++  const { allowed } = checkRateLimit(clientKeyFromHeaders(req.headers, 'agent-earn'), 30, 60_000)
++  if (!allowed) {
++    return NextResponse.json({ ok: false, error: 'rate_limited' }, { status: 429 })
++  }
++
++  const listing = RESOURCE_CATALOG[resource]
++  if (!listing) {
++    return NextResponse.json({ ok: false, error: 'unknown_resource' }, { status: 404 })
++  }
++
++  const terms = buildTerms(resource, listing.amount)
++  const proof = parseProofHeader(req.headers.get(PAYMENT_PROOF_HEADER), resource)
++
++  if (!proof) {
++    // Disclose price and terms up front — same disclosure standard as an affiliate link.
++    return NextResponse.json(paymentRequired(terms), { status: 402 })
++  }
++
++  const verification = await verifyPayment(proof)
++  if (!verification.verified) {
++    return NextResponse.json(
++      { ...paymentRequired(terms), error: verification.reason },
++      { status: 402 }
++    )
++  }
++
++  // TODO(production): plug in the real agent output here — a generated report, a scored
++  // data feed, an analysis, whatever this endpoint is actually charging for. Keep the
++  // resource genuinely valuable per the network's honesty standard: don't sell a thin
++  // wrapper, sell an outcome.
++  return NextResponse.json({
++    ok: true,
++    resource,
++    data: 'your valuable resource goes here — TODO: replace with real agent output',
++  })
++}
+diff --git a/app/api/analytics/route.ts b/app/api/analytics/route.ts
+new file mode 100644
+index 0000000..85dde6d
+--- /dev/null
++++ b/app/api/analytics/route.ts
+@@ -0,0 +1,20 @@
++import { NextResponse } from 'next/server'
++import { forwardAnalyticsEvent, normalizeAnalyticsEvent } from '@/lib/analytics'
++import { checkRateLimit, clientKeyFromHeaders } from '@agentic-income/engine'
++
++export async function POST(req: Request) {
++  const { allowed } = checkRateLimit(clientKeyFromHeaders(req.headers, 'analytics'), 30, 60_000)
++  if (!allowed) {
++    return NextResponse.json({ ok: false, error: 'rate_limited' }, { status: 429 })
++  }
++
++  const body = await req.json().catch(() => null)
++  const event = normalizeAnalyticsEvent(body)
++
++  if (!event) {
++    return NextResponse.json({ ok: false, error: 'invalid_event' }, { status: 400 })
++  }
++
++  const forwarded = await forwardAnalyticsEvent(event)
++  return NextResponse.json({ ok: true, forwarded })
++}
+diff --git a/app/api/subscribe/route.ts b/app/api/subscribe/route.ts
+new file mode 100644
+index 0000000..05ee069
+--- /dev/null
++++ b/app/api/subscribe/route.ts
+@@ -0,0 +1,16 @@
++import { NextResponse } from 'next/server'
++import { checkRateLimit, clientKeyFromHeaders } from '@agentic-income/engine'
++
++export async function POST(req: Request) {
++  const { allowed } = checkRateLimit(clientKeyFromHeaders(req.headers, 'subscribe'), 5, 60_000)
++  if (!allowed) {
++    return NextResponse.json({ ok: false, error: 'rate_limited' }, { status: 429 })
++  }
++
++  const { email } = await req.json().catch(() => ({}))
++  if (!email || typeof email !== 'string' || !email.includes('@')) {
++    return NextResponse.json({ ok: false, error: 'invalid_email' }, { status: 400 })
++  }
++  console.log('[subscribe] lead captured (template):', email)
++  return NextResponse.json({ ok: true })
++}
+\ No newline at end of file
+diff --git a/app/globals.css b/app/globals.css
+index 62a555e..d0e1ab8 100644
+--- a/app/globals.css
++++ b/app/globals.css
+@@ -1,14 +1,14 @@
+ @import "tailwindcss";
+ 
+ @theme {
+-  --color-bg: #07080d;
+-  --color-surface: #0d0f17;
+-  --color-border: #1c1f2e;
+-  --color-ink: #e7e9f0;
+-  --color-muted: #9aa0b4;
+-  --color-accent: #6ea8fe;
+-  --color-accent-2: #a78bfa;
+-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
++  --color-bg: #05060A;
++  --color-surface: #0A0C14;
++  --color-border: #1A1F2E;
++  --color-ink: #F1F3F9;
++  --color-muted: #8A90A8;
++  --color-accent: #6EA8FE;
++  --color-accent-2: #A78BFA;
++  --font-sans: 'Instrument Sans', system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+ }
+ 
+ :root { color-scheme: dark; }
+@@ -16,30 +16,42 @@
+ html { scroll-behavior: smooth; }
+ 
+ body {
+-  background:
+-    radial-gradient(1200px 600px at 70% -10%, rgba(110, 168, 254, 0.10), transparent 60%),
+-    radial-gradient(900px 500px at 10% 10%, rgba(167, 139, 250, 0.08), transparent 55%),
+-    var(--color-bg);
++  background: var(--color-bg);
+   color: var(--color-ink);
+   font-family: var(--font-sans);
+   -webkit-font-smoothing: antialiased;
++  font-feature-settings: "tnum";
+ }
+ 
+ .glass {
+-  background: color-mix(in oklab, var(--color-surface) 80%, transparent);
+-  border: 1px solid var(--color-border);
+-  backdrop-filter: blur(12px);
++  position: relative;
++  background: color-mix(in oklab, var(--color-surface) 82%, transparent);
++  border: 1px solid color-mix(in oklab, var(--color-border) 70%, white 12%);
++  backdrop-filter: blur(20px) saturate(160%);
++  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 30px 100px rgba(0,0,0,0.3);
++}
++
++@media (prefers-reduced-motion: no-preference) {
++  .glass { transition: transform 200ms cubic-bezier(0.2,0,0,1), border-color 200ms ease, background 200ms ease; }
++  .glass:hover { transform: translateY(-1px); }
+ }
+ 
+ .prose-ai {
+   max-width: 46rem;
+-  line-height: 1.75;
++  line-height: 1.78;
++  font-size: 1.02rem;
+ }
+-.prose-ai h2 { font-size: 1.6rem; font-weight: 700; margin: 2.4rem 0 0.9rem; letter-spacing: -0.01em; }
+-.prose-ai h3 { font-size: 1.2rem; font-weight: 600; margin: 1.8rem 0 0.6rem; }
+-.prose-ai p { margin: 0.9rem 0; color: var(--color-ink); }
+-.prose-ai a { color: var(--color-accent); text-decoration: underline; text-underline-offset: 3px; }
+-.prose-ai ul, .prose-ai ol { margin: 0.9rem 0; padding-left: 1.3rem; }
+-.prose-ai li { margin: 0.4rem 0; }
+-.prose-ai code { background: var(--color-surface); border: 1px solid var(--color-border); padding: 0.1rem 0.4rem; border-radius: 0.35rem; font-size: 0.9em; }
++.prose-ai h2 { font-size: 1.75rem; font-weight: 700; margin: 2.6rem 0 1rem; letter-spacing: -0.015em; }
++.prose-ai h3 { font-size: 1.25rem; font-weight: 600; margin: 2rem 0 0.75rem; }
++.prose-ai p { margin: 1rem 0; color: var(--color-ink); }
++.prose-ai a { color: var(--color-accent); text-decoration: underline; text-underline-offset: 2px; }
++.prose-ai ul, .prose-ai ol { margin: 1rem 0; padding-left: 1.4rem; }
++.prose-ai li { margin: 0.45rem 0; }
++.prose-ai code { background: var(--color-surface); border: 1px solid var(--color-border); padding: 0.1rem 0.45rem; border-radius: 0.3rem; font-size: 0.88em; }
+ .prose-ai strong { color: #fff; }
++
++/* Premium utilities */
++.cta { border-radius: 9999px; background: var(--color-accent); padding: 0.875rem 1.75rem; font-weight: 600; color: var(--color-bg); box-shadow: 0 20px 70px rgba(110,168,254,0.28); }
++.cta:hover { opacity: .95; }
++.cta-secondary { border-radius: 9999px; border: 1px solid var(--color-border); background: rgba(255,255,255,0.02); padding: 0.875rem 1.75rem; font-weight: 600; color: var(--color-ink); }
++.cta-secondary:hover { border-color: var(--color-accent); }
+diff --git a/app/layout.tsx b/app/layout.tsx
+index 429128c..4ea3dea 100644
+--- a/app/layout.tsx
++++ b/app/layout.tsx
+@@ -3,6 +3,8 @@ import './globals.css'
+ import { Nav } from '@/components/Nav'
+ import { Footer } from '@/components/Footer'
+ import { site } from '@/lib/site'
++import { CatalogProvider } from '@agentic-income/engine/react.js'
++import catalog from '@/data/programs.json'
+ 
+ export const metadata: Metadata = {
+   metadataBase: new URL(site.url),
+@@ -17,9 +19,11 @@ export default function RootLayout({ children }: { children: React.ReactNode })
+   return (
+     <html lang="en">
+       <body>
+-        <Nav />
+-        <main className="mx-auto max-w-5xl px-5">{children}</main>
+-        <Footer />
++        <CatalogProvider catalog={catalog}>
++          <Nav />
++          <main className="mx-auto max-w-6xl px-6">{children}</main>
++          <Footer />
++        </CatalogProvider>
+       </body>
+     </html>
+   )
+diff --git a/components/AffiliateDisclosure.tsx b/components/AffiliateDisclosure.tsx
+deleted file mode 100644
+index 4d91bf2..0000000
+--- a/components/AffiliateDisclosure.tsx
++++ /dev/null
+@@ -1,11 +0,0 @@
+-import { DISCLOSURE } from '@/lib/affiliate'
+-
+-/** One per page that carries affiliate links — FTC compliance + trust. */
+-export function AffiliateDisclosure() {
+-  return (
+-    <p className="my-6 rounded-lg border border-border bg-surface/60 px-4 py-3 text-sm text-muted">
+-      <span aria-hidden>🔗 </span>
+-      {DISCLOSURE}
+-    </p>
+-  )
+-}
+diff --git a/components/AffiliateLink.tsx b/components/AffiliateLink.tsx
+deleted file mode 100644
+index 5be2221..0000000
+--- a/components/AffiliateLink.tsx
++++ /dev/null
+@@ -1,19 +0,0 @@
+-import { getLink, findProgram } from '@/lib/affiliate'
+-
+-/**
+- * Renders an affiliate link when we've joined the program (ourLink set),
+- * otherwise plain bold text — never a dead link. The catalog is the single
+- * source of truth: join a program, set ourLink, and every mention goes live.
+- */
+-export function AffiliateLink({ tool, children }: { tool: string; children?: React.ReactNode }) {
+-  const href = getLink(tool)
+-  const label = children ?? findProgram(tool)?.tool ?? tool
+-
+-  if (!href) return <strong>{label}</strong>
+-
+-  return (
+-    <a href={href} target="_blank" rel="sponsored nofollow noopener" className="text-accent underline underline-offset-2">
+-      {label}
+-    </a>
+-  )
+-}
+diff --git a/components/AnswerBox.tsx b/components/AnswerBox.tsx
+deleted file mode 100644
+index 49b38cb..0000000
+--- a/components/AnswerBox.tsx
++++ /dev/null
+@@ -1,12 +0,0 @@
+-/**
+- * The AEO answer box — a direct, citable answer at the top of a post.
+- * This is the surface AI search engines lift. Lead with the conclusion.
+- */
+-export function AnswerBox({ children }: { children: React.ReactNode }) {
+-  return (
+-    <div className="my-6 rounded-xl border border-accent/30 bg-accent/[0.06] px-5 py-4">
+-      <div className="mb-1 text-xs font-semibold uppercase tracking-wider text-accent">The short answer</div>
+-      <div className="text-[1.05rem] leading-relaxed text-ink">{children}</div>
+-    </div>
+-  )
+-}
+diff --git a/components/ComparisonTable.tsx b/components/ComparisonTable.tsx
+deleted file mode 100644
+index 6f3d88a..0000000
+--- a/components/ComparisonTable.tsx
++++ /dev/null
+@@ -1,89 +0,0 @@
+-'use client'
+-
+-import { useState } from 'react'
+-import { getLink } from '@/lib/affiliate'
+-
+-export type Row = {
+-  tool: string
+-  verdict: string
+-  price: string
+-  recurring?: string
+-  pick?: boolean
+-}
+-
+-type SortKey = 'tool'
+-
+-/**
+- * The money component: an honest, sortable tool table. The "Try" cell only
+- * renders a CTA when we've joined that program (ourLink set) — otherwise the
+- * tool is still listed and recommended, just without a link. Honesty first.
+- */
+-export function ComparisonTable({ rows, caption }: { rows: Row[]; caption?: string }) {
+-  const [sort, setSort] = useState<SortKey>('tool')
+-  const [asc, setAsc] = useState(true)
+-
+-  const sorted = [...rows].sort((a, b) => {
+-    const cmp = a[sort].localeCompare(b[sort])
+-    return asc ? cmp : -cmp
+-  })
+-
+-  const toggle = (key: SortKey) => {
+-    if (key === sort) setAsc(!asc)
+-    else { setSort(key); setAsc(true) }
+-  }
+-
+-  return (
+-    <div className="my-7 overflow-hidden rounded-xl border border-border glass">
+-      {caption && <div className="border-b border-border px-4 py-2.5 text-sm font-medium text-muted">{caption}</div>}
+-      <div className="overflow-x-auto">
+-        <table className="w-full border-collapse text-sm">
+-          <thead>
+-            <tr className="text-left text-muted">
+-              <Th onClick={() => toggle('tool')} active={sort === 'tool'} asc={asc}>Tool</Th>
+-              <th className="px-4 py-3 font-semibold">Verdict</th>
+-              <th className="px-4 py-3 font-semibold">Price</th>
+-              <th className="px-4 py-3 font-semibold">Recurring</th>
+-              <th className="px-4 py-3 font-semibold">Try</th>
+-            </tr>
+-          </thead>
+-          <tbody>
+-            {sorted.map((r) => {
+-              const href = getLink(r.tool)
+-              return (
+-                <tr key={r.tool} className={`border-t border-border ${r.pick ? 'bg-accent/[0.05]' : ''}`}>
+-                  <td className="px-4 py-3 font-semibold text-ink">
+-                    {r.tool}
+-                    {r.pick && <span className="ml-2 rounded bg-accent/20 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-accent">Top pick</span>}
+-                  </td>
+-                  <td className="px-4 py-3 text-muted">{r.verdict}</td>
+-                  <td className="px-4 py-3 text-ink">{r.price}</td>
+-                  <td className="px-4 py-3 text-muted">{r.recurring ?? '—'}</td>
+-                  <td className="px-4 py-3">
+-                    {href ? (
+-                      <a href={href} target="_blank" rel="sponsored nofollow noopener" className="rounded-md bg-accent px-3 py-1.5 text-xs font-semibold text-bg hover:opacity-90">
+-                        Try →
+-                      </a>
+-                    ) : (
+-                      <span className="text-xs text-muted/60">—</span>
+-                    )}
+-                  </td>
+-                </tr>
+-              )
+-            })}
+-          </tbody>
+-        </table>
+-      </div>
+-    </div>
+-  )
+-}
+-
+-function Th({ children, onClick, active, asc }: { children: React.ReactNode; onClick: () => void; active: boolean; asc: boolean }) {
+-  return (
+-    <th className="px-4 py-3 font-semibold">
+-      <button onClick={onClick} className="inline-flex items-center gap-1 hover:text-ink">
+-        {children}
+-        <span className="text-[10px] opacity-60">{active ? (asc ? '▲' : '▼') : '↕'}</span>
+-      </button>
+-    </th>
+-  )
+-}
+diff --git a/components/EmailCapture.tsx b/components/EmailCapture.tsx
+index 2ed3089..2442ed0 100644
+--- a/components/EmailCapture.tsx
++++ b/components/EmailCapture.tsx
+@@ -6,34 +6,35 @@ import { useState } from 'react'
+  * Email capture — the owned-audience asset. Currently posts to a no-op handler;
+  * wire `action` to your ESP (Systeme.io / Resend) endpoint when ready.
+  */
+-export function EmailCapture({ headline = 'Get the stack that earns', sub = 'One email when a new tool actually beats what you\'re paying for. No noise.' }: { headline?: string; sub?: string }) {
++export function EmailCapture({ headline = 'Get the stack that earns', sub = 'One high-signal email when a tool that compounds is available. No noise.' }: { headline?: string; sub?: string }) {
+   const [done, setDone] = useState(false)
+ 
+   return (
+-    <div className="my-8 rounded-2xl border border-border glass px-6 py-7 text-center">
+-      <h3 className="text-xl font-bold text-ink">{headline}</h3>
+-      <p className="mx-auto mt-2 max-w-md text-sm text-muted">{sub}</p>
++    <div className="my-10 card text-center">
++      <h3 className="text-2xl font-semibold tracking-tight">{headline}</h3>
++      <p className="mx-auto mt-2 max-w-md text-[15px] text-muted">{sub}</p>
++
+       {done ? (
+-        <p className="mt-4 text-sm font-medium text-accent">You're in. Check your inbox.</p>
++        <p className="mt-5 text-accent font-medium">You’re in. Check your inbox for the latest payer brief.</p>
+       ) : (
+         <form
+-          className="mx-auto mt-4 flex max-w-md flex-col gap-2 sm:flex-row"
+-          onSubmit={(e) => { e.preventDefault(); setDone(true) }}
++          className="mx-auto mt-5 flex max-w-md flex-col gap-3 sm:flex-row"
++          onSubmit={async (e) => {
++            e.preventDefault()
++            const form = e.currentTarget
++            const email = (form.elements.namedItem('email') as HTMLInputElement).value
++            try { await fetch('/api/subscribe', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ email }) }) } catch {}
++            setDone(true)
++          }}
+         >
+-          <input
+-            type="email"
+-            required
+-            placeholder="you@email.com"
+-            aria-label="Email address"
+-            autoComplete="email"
+-            name="email"
+-            className="flex-1 rounded-lg border border-border bg-bg px-4 py-2.5 text-sm text-ink outline-none focus:border-accent"
+-          />
+-          <button type="submit" className="rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-bg hover:opacity-90">
+-            Send it
+-          </button>
++          <input name="email" type="email" required placeholder="you@email.com" className="flex-1 rounded-xl border border-border bg-bg px-5 py-3 text-sm outline-none focus:border-accent" />
++          <button type="submit" className="rounded-xl bg-accent px-6 py-3 text-sm font-semibold text-bg">Subscribe</button>
+         </form>
+       )}
++
++      <div className="mt-4 text-[11px] text-muted">
++        Highest-converting partner: <a href="https://go.agenticincome.ai/systeme" target="_blank" rel="sponsored" className="text-accent underline">Systeme.io (60% lifetime recurring)</a>.
++      </div>
+     </div>
+   )
+ }
+diff --git a/components/FaqSection.tsx b/components/FaqSection.tsx
+deleted file mode 100644
+index 601e2eb..0000000
+--- a/components/FaqSection.tsx
++++ /dev/null
+@@ -1,32 +0,0 @@
+-export type Faq = { q: string; a: string }
+-
+-/**
+- * Renders FAQs and emits FAQPage JSON-LD in one place — the schema that wins
+- * the "People also ask" boxes and gets lifted into AI answers.
+- */
+-export function FaqSection({ items }: { items: Faq[] }) {
+-  const jsonLd = {
+-    '@context': 'https://schema.org',
+-    '@type': 'FAQPage',
+-    mainEntity: items.map((f) => ({
+-      '@type': 'Question',
+-      name: f.q,
+-      acceptedAnswer: { '@type': 'Answer', text: f.a },
+-    })),
+-  }
+-
+-  return (
+-    <section className="my-8">
+-      <h2>Frequently asked questions</h2>
+-      <div className="mt-3 divide-y divide-border rounded-xl border border-border">
+-        {items.map((f) => (
+-          <details key={f.q} className="group px-4 py-3">
+-            <summary className="cursor-pointer list-none font-semibold text-ink marker:hidden">{f.q}</summary>
+-            <p className="mt-2 text-muted">{f.a}</p>
+-          </details>
+-        ))}
+-      </div>
+-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }} />
+-    </section>
+-  )
+-}
+diff --git a/components/Footer.tsx b/components/Footer.tsx
+index b17919e..3955983 100644
+--- a/components/Footer.tsx
++++ b/components/Footer.tsx
+@@ -4,7 +4,7 @@ import { site } from '@/lib/site'
+ export function Footer() {
+   return (
+     <footer className="mt-20 border-t border-border">
+-      <div className="mx-auto max-w-5xl px-5 py-10">
++      <div className="mx-auto max-w-6xl px-6 py-10">
+         <div className="grid gap-8 sm:grid-cols-2">
+           <div>
+             <div className="font-bold text-ink">{site.name}</div>
+diff --git a/components/Nav.tsx b/components/Nav.tsx
+index f1c307a..ba730fd 100644
+--- a/components/Nav.tsx
++++ b/components/Nav.tsx
+@@ -4,9 +4,9 @@ import { site } from '@/lib/site'
+ export function Nav() {
+   return (
+     <header className="sticky top-0 z-50 border-b border-border/60 glass">
+-      <nav className="mx-auto flex max-w-5xl items-center justify-between px-5 py-3.5">
++      <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3.5">
+         <Link href="/" className="flex items-center gap-2 font-bold tracking-tight text-ink">
+-          <span className="grid h-7 w-7 place-items-center rounded-lg bg-gradient-to-br from-accent to-accent-2 text-bg">◆</span>
++          <img src="/brand/logo-monogram-3d.jpg" alt="Agentic Income" className="h-7 w-7 object-contain" />
+           {site.name}
+         </Link>
+         <div className="flex items-center gap-5 text-sm text-muted">
+diff --git a/lib/affiliate.ts b/lib/affiliate.ts
+index 735f800..720fea9 100644
+--- a/lib/affiliate.ts
++++ b/lib/affiliate.ts
+@@ -1,46 +1,8 @@
+ import catalog from '@/data/programs.json'
++import { createAffiliateHelpers, type Program } from '@agentic-income/engine/catalog-helpers.js'
+ 
+-export type Program = {
+-  tool: string
+-  category: string
+-  aliases: string[]
+-  hasProgram: boolean
+-  priority?: number
+-  commission?: string
+-  recurring?: string
+-  cookieDays?: number | null
+-  network?: string
+-  signupUrl?: string
+-  ourLink?: string | null
+-  status?: string
+-  note?: string
+-}
+-
+-const PROGRAMS = catalog.programs as Program[]
+-export const DISCLOSURE = catalog.disclosure as string
+-
+-const byAlias = new Map<string, Program>()
+-for (const p of PROGRAMS) {
+-  byAlias.set(p.tool.toLowerCase(), p)
+-  for (const a of p.aliases ?? []) byAlias.set(a.toLowerCase(), p)
+-}
+-
+-export function findProgram(tool: string): Program | undefined {
+-  return byAlias.get(tool.trim().toLowerCase())
+-}
+-
+-/**
+- * The affiliate link for a tool, or null when we haven't joined the program.
+- * Null is the honest default — callers render plain text, never a dead link.
+- */
+-export function getLink(tool: string): string | null {
+-  const p = findProgram(tool)
+-  return p?.ourLink ?? null
+-}
+-
+-/** Programs worth joining, ranked by priority — drives the "monetize" surfaces. */
+-export function payingPrograms(): Program[] {
+-  return PROGRAMS
+-    .filter((p) => p.hasProgram && p.status !== 'closed' && p.status !== 'dead-end')
+-    .sort((a, b) => (a.priority ?? 99) - (b.priority ?? 99))
+-}
++// Thin per-site binding: the matching/lookup logic lives once in the shared package,
++// this file just supplies this site's own vendored catalog. Every existing
++// `import { getLink } from '@/lib/affiliate'` call site keeps working unchanged.
++export type { Program }
++export const { DISCLOSURE, findProgram, getLink, payingPrograms } = createAffiliateHelpers(catalog)
+diff --git a/lib/agent-earn.ts b/lib/agent-earn.ts
+new file mode 100644
+index 0000000..ce83f2c
+--- /dev/null
++++ b/lib/agent-earn.ts
+@@ -0,0 +1,184 @@
++// agent-earn — reusable helpers for x402-gated endpoints (the "agent charges per call" starter).
++//
++// Design spec: agentic-income-skills/skills/income-web3/SKILL.md. Read that file before
++// changing the shape of these helpers — it defines the honesty guardrails this module exists
++// to enforce (testnet/dry-run first, mandatory spend guardrail, no real key in code, disclose
++// price before charging).
++//
++// x402 flow this module supports:
++//   agent → GET resource → 402 { x402: payment terms } → agent settles on-chain →
++//   agent → GET resource + proof header → verifyPayment() → 200 { resource }
++//
++// Zero runtime dependencies. Everything below is Next.js built-ins + Web Crypto + plain TS.
++
++/** Stablecoin asset identifiers this template expects to be priced in. Extend as needed. */
++export type PaymentAsset = 'USDC' | 'USDT' | 'DAI'
++
++/**
++ * Network identifiers. Testnets are listed first and are the only ones this template's
++ * stub code is meant to be exercised against before an operator has done real integration
++ * work and given explicit go-ahead for mainnet spend.
++ */
++export type PaymentNetwork =
++  | 'base-sepolia' // testnet — default for this template
++  | 'base' // mainnet — do not point production traffic here without explicit operator sign-off
++  | 'ethereum-sepolia'
++  | 'ethereum'
++
++/** Terms the server quotes back in the 402 body. Amount is a decimal string, e.g. "0.10". */
++export interface PaymentTerms {
++  /** Decimal amount as a string to avoid floating-point money bugs, e.g. "0.10" for ten cents. */
++  amount: string
++  asset: PaymentAsset
++  network: PaymentNetwork
++  /** The wallet address that should receive payment. Never a private key — address only. */
++  payTo: string
++  /** The resource identifier this quote is for, e.g. "reports/q3-market-scan". */
++  resource: string
++}
++
++/** The 402 response body shape per the x402 convention: a top-level `x402` key. */
++export interface X402PaymentRequiredBody {
++  x402: PaymentTerms
++}
++
++/**
++ * Builds the JSON body for a 402 Payment Required response. Callers wrap this in
++ * NextResponse.json(paymentRequired(terms), { status: 402 }).
++ */
++export function paymentRequired(terms: PaymentTerms): X402PaymentRequiredBody {
++  return { x402: terms }
++}
++
++/** The proof an agent sends back after settling on-chain, typically via a request header. */
++export interface PaymentProof {
++  /** On-chain transaction hash / settlement reference the agent is claiming as proof of payment. */
++  txHash: string
++  /** Network the proof claims settlement happened on. Must match the quoted PaymentTerms.network. */
++  network: PaymentNetwork
++  /** The resource this payment was for — must match the requested resource, not just any resource. */
++  resource: string
++  /** Amount the agent claims to have paid — must match or exceed PaymentTerms.amount. */
++  amount: string
++}
++
++export interface VerificationResult {
++  verified: boolean
++  reason: string
++}
++
++/**
++ * STUB — on-chain settlement verification. This is where real x402 integration goes.
++ *
++ * TODO(production): replace this stub with real verification before accepting any live
++ * traffic that gates a real resource. A real implementation needs to, at minimum:
++ *   1. Look up `proof.txHash` on `proof.network` via an RPC provider or indexer
++ *      (e.g. viem/ethers public client, or a facilitator service such as Coinbase's
++ *      x402 facilitator — see https://www.x402.org for the current facilitator list).
++ *   2. Confirm the transaction is mined/finalized (respect the chain's confirmation depth —
++ *      testnets and L2s differ; don't treat "pending" as paid).
++ *   3. Confirm the transfer amount and asset match `terms.amount` / `terms.asset` (compare
++ *      as integers in the token's smallest unit, not floats).
++ *   4. Confirm the recipient is the operator's `payTo` address — a proof paying a different
++ *      address must not verify.
++ *   5. Confirm the transaction hasn't already been redeemed for this resource (replay
++ *      protection — persist spent tx hashes in real storage, not memory; see
++ *      checkSpendGuardrail's daily-cap comment for why in-memory state doesn't survive
++ *      serverless cold starts).
++ *
++ * Until that's wired up, this always returns unverified. Do not remove this stub's failure
++ * mode as a shortcut to "make the demo work" — a verifier that defaults to `true` is a free
++ * resource, not a paid one.
++ */
++export async function verifyPayment(_proof: PaymentProof): Promise<VerificationResult> {
++  // TODO(production): call a chain client / x402 facilitator here. Suggested deps to add
++  // when wiring this up for real (see app/api/agent/README.md for install commands):
++  //   - viem or ethers — read the chain, confirm the transfer.
++  //   - a x402 facilitator SDK/client, if using a hosted facilitator instead of verifying
++  //     directly against RPC.
++  return {
++    verified: false,
++    reason: 'verification not wired — testnet stub',
++  }
++}
++
++export type SpendDecision =
++  | { allowed: true }
++  | { allowed: false; reason: string }
++
++/** A single guardrail request to evaluate — what the agent wants to spend, and on what. */
++export interface SpendRequest {
++  /** Decimal amount as a string, same convention as PaymentTerms.amount. */
++  amount: string
++  asset: PaymentAsset
++  /** The resource or counterparty identifier the spend is for, checked against the allowlist. */
++  target: string
++}
++
++/**
++ * Spend policy the operator sets. This is the MANDATORY guardrail called out in
++ * income-web3/SKILL.md — an agent with an unguarded wallet is a liability, not an asset.
++ */
++export interface SpendPolicy {
++  /** Hard cap per single transaction, decimal string in the same asset as the request. */
++  perTransactionCap: string
++  /** Hard cap on total spend per rolling day, decimal string. */
++  dailyCap: string
++  /** Exact set of resource/target identifiers the agent is allowed to pay for. */
++  allowlist: string[]
++}
++
++// Best-effort, non-durable daily spend tracker. This resets on every cold start/deploy and is
++// NOT shared across serverless instances or regions — it is a speed bump against accidental
++// runaway spend within a single warm instance, not a real ledger. TODO(production): back this
++// with a real store (e.g. a database row per operator/day) before relying on the daily cap for
++// anything that matters financially.
++const dailySpendByKey = new Map<string, { day: string; total: number }>()
++
++function todayKey(): string {
++  return new Date().toISOString().slice(0, 10)
++}
++
++function parseAmount(amount: string): number {
++  const n = Number(amount)
++  return Number.isFinite(n) ? n : NaN
++}
++
++/**
++ * Enforces the mandatory spend guardrail: per-transaction cap, daily cap (in-memory,
++ * best-effort — see dailySpendByKey comment), and an allowlist of what the agent may pay for.
++ *
++ * `trackingKey` scopes the daily cap — e.g. the operator's wallet address or agent id. Pass
++ * something stable across calls for the cap to mean anything.
++ */
++export function checkSpendGuardrail(
++  request: SpendRequest,
++  policy: SpendPolicy,
++  trackingKey: string
++): SpendDecision {
++  const amount = parseAmount(request.amount)
++  if (!Number.isFinite(amount) || amount <= 0) {
++    return { allowed: false, reason: 'invalid_amount' }
++  }
++
++  if (!policy.allowlist.includes(request.target)) {
++    return { allowed: false, reason: 'target_not_allowlisted' }
++  }
++
++  const perTxCap = parseAmount(policy.perTransactionCap)
++  if (amount > perTxCap) {
++    return { allowed: false, reason: 'exceeds_per_transaction_cap' }
++  }
++
++  const dailyCap = parseAmount(policy.dailyCap)
++  const day = todayKey()
++  const existing = dailySpendByKey.get(trackingKey)
++  const spentSoFar = existing && existing.day === day ? existing.total : 0
++
++  if (spentSoFar + amount > dailyCap) {
++    return { allowed: false, reason: 'exceeds_daily_cap' }
++  }
++
++  dailySpendByKey.set(trackingKey, { day, total: spentSoFar + amount })
++  return { allowed: true }
++}
+diff --git a/lib/analytics.ts b/lib/analytics.ts
+new file mode 100644
+index 0000000..5ad3cd9
+--- /dev/null
++++ b/lib/analytics.ts
+@@ -0,0 +1,11 @@
++import { normalizeAnalyticsEvent, forwardAnalyticsEvent as forward, type AnalyticsEvent } from '@agentic-income/engine/analytics.js'
++import { site } from '@/lib/site'
++
++// Thin per-site binding: validation/allow-list logic lives once in the shared package;
++// this file just binds the site host for outbound forwarding.
++export type { AnalyticsEvent }
++export { normalizeAnalyticsEvent }
++
++export function forwardAnalyticsEvent(event: AnalyticsEvent): Promise<boolean> {
++  return forward(event, site.domain)
++}
+diff --git a/lib/client-analytics.ts b/lib/client-analytics.ts
+new file mode 100644
+index 0000000..91f6884
+--- /dev/null
++++ b/lib/client-analytics.ts
+@@ -0,0 +1 @@
++export { trackClientEvent } from '@agentic-income/engine/analytics.js'
+diff --git a/mdx-components.tsx b/mdx-components.tsx
+index 2f54d45..c67b64c 100644
+--- a/mdx-components.tsx
++++ b/mdx-components.tsx
+@@ -1,11 +1,9 @@
+ import type { MDXComponents } from 'mdx/types'
+-import { AffiliateLink } from '@/components/AffiliateLink'
+-import { AffiliateDisclosure } from '@/components/AffiliateDisclosure'
+-import { ComparisonTable } from '@/components/ComparisonTable'
+-import { AnswerBox } from '@/components/AnswerBox'
+-import { FaqSection } from '@/components/FaqSection'
++import { AffiliateLink, AffiliateDisclosure, ComparisonTable, AnswerBox, FaqSection } from '@agentic-income/engine/react.js'
+ import { ArticleJsonLd } from '@/components/ArticleJsonLd'
+ 
++// AffiliateLink/AffiliateDisclosure/ComparisonTable read this site's catalog via
++// CatalogProvider (wrapped around the app in app/layout.tsx), not a factory call.
+ // Components available inside every .mdx post without an import.
+ export function useMDXComponents(components: MDXComponents): MDXComponents {
+   return {
+diff --git a/next.config.mjs b/next.config.mjs
+index 649ec0d..334c22a 100644
+--- a/next.config.mjs
++++ b/next.config.mjs
+@@ -1,9 +1,29 @@
+ import createMDX from '@next/mdx'
+ 
++const securityHeaders = [
++  // Baseline hardening only — deliberately no Content-Security-Policy here yet.
++  // A real CSP needs every external domain this site actually loads allowlisted and
++  // tested first; get that wrong and it silently breaks fonts/analytics/images instead
++  // of failing loudly. Do that as its own reviewed change per fork.
++  { key: 'X-Content-Type-Options', value: 'nosniff' },
++  { key: 'X-Frame-Options', value: 'DENY' },
++  { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
++  { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
++]
++
+ /** @type {import('next').NextConfig} */
+ const nextConfig = {
+   pageExtensions: ['ts', 'tsx', 'mdx'],
+-  experimental: { mdxRs: true },
++  experimental: {
++    mdxRs: true,
++    // The shared package is a symlinked sibling repo (pnpm "link:" dependency) — its real
++    // path is outside this project's root, which Next otherwise refuses to process.
++    externalDir: true,
++  },
++  transpilePackages: ['@agentic-income/engine'],
++  async headers() {
++    return [{ source: '/:path*', headers: securityHeaders }]
++  },
+ }
+ 
+ const withMDX = createMDX({})
+diff --git a/package.json b/package.json
+index 25b42b3..6e1af5e 100644
+--- a/package.json
++++ b/package.json
+@@ -10,9 +10,12 @@
+     "start": "next start",
+     "lint": "next lint",
+     "sync:catalog": "node scripts/sync-catalog.mjs",
+-    "audit:affiliate": "node scripts/audit-affiliate.mjs"
++    "audit:affiliate": "node scripts/audit-affiliate.mjs",
++    "type-check": "tsc --noEmit",
++    "merge:gate": "npm run type-check"
+   },
+   "dependencies": {
++    "@agentic-income/engine": "link:../affiliate-agent-skills",
+     "next": "^16.0.0",
+     "react": "^19.0.0",
+     "react-dom": "^19.0.0"
+diff --git a/pnpm-lock.yaml b/pnpm-lock.yaml
+index 6b06ad7..2d8c95d 100644
+--- a/pnpm-lock.yaml
++++ b/pnpm-lock.yaml
+@@ -8,6 +8,9 @@ importers:
+ 
+   .:
+     dependencies:
++      '@agentic-income/engine':
++        specifier: link:../affiliate-agent-skills
++        version: link:../affiliate-agent-skills
+       next:
+         specifier: ^16.0.0
+         version: 16.2.7(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+diff --git a/public/brand/logo-monogram-3d.jpg b/public/brand/logo-monogram-3d.jpg
+new file mode 100644
+index 0000000..02f1845
+Binary files /dev/null and b/public/brand/logo-monogram-3d.jpg differ

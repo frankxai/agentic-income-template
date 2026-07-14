@@ -15,7 +15,7 @@
     "merge:gate": "npm run type-check"
   },
   "dependencies": {
-    "@agentic-income/engine": "link:../affiliate-agent-skills",
+    "@agentic-income/engine": "github:frankxai/affiliate-agent-skills#main",
     "next": "^16.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
@@ -31,5 +31,13 @@
     "@types/react-dom": "^19.0.0",
     "tailwindcss": "^4.1.0",
     "typescript": "^5.7.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "sharp"
+    ],
+    "overrides": {
+      "postcss": "8.5.15"
+    }
   }
 }
