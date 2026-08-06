@@ -3,8 +3,10 @@
 import { useState } from 'react'
 
 /**
- * Email capture — the owned-audience asset. Currently posts to a no-op handler;
- * wire `action` to your ESP (Systeme.io / Resend) endpoint when ready.
+ * Email capture — the owned-audience asset. This is a template stub: submitting
+ * only flips local state, and the email is NOT stored or sent anywhere. Wire the
+ * form's onSubmit to your ESP (Systeme.io / Resend / Buttondown) endpoint before
+ * launch — until then the success message says so honestly.
  */
 export function EmailCapture({ headline = 'Get the stack that earns', sub = 'One email when a new tool actually beats what you\'re paying for. No noise.' }: { headline?: string; sub?: string }) {
   const [done, setDone] = useState(false)
@@ -14,7 +16,7 @@ export function EmailCapture({ headline = 'Get the stack that earns', sub = 'One
       <h3 className="text-xl font-bold text-ink">{headline}</h3>
       <p className="mx-auto mt-2 max-w-md text-sm text-muted">{sub}</p>
       {done ? (
-        <p className="mt-4 text-sm font-medium text-accent">You're in. Check your inbox.</p>
+        <p className="mt-4 text-sm font-medium text-accent">Form received — this template isn't wired to an email provider yet. Connect yours in components/EmailCapture.tsx.</p>
       ) : (
         <form
           className="mx-auto mt-4 flex max-w-md flex-col gap-2 sm:flex-row"
