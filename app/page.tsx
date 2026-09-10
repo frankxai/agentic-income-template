@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { site } from '@/lib/site'
 import { sortedPosts } from '@/lib/posts'
 import { EmailCapture } from '@/components/EmailCapture'
@@ -12,10 +13,13 @@ export default function Home() {
     <>
       {/* Hero */}
       <section className="relative overflow-hidden border-b border-border py-16 sm:py-24">
-        <img
+        <Image
           src={heroVisual}
           alt=""
           aria-hidden="true"
+          fill
+          sizes="100vw"
+          priority
           className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-65"
         />
         <div className="absolute inset-0 bg-[linear-gradient(90deg,var(--color-bg)_0%,rgba(7,8,13,0.94)_46%,rgba(7,8,13,0.30)_100%)]" />
