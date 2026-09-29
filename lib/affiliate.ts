@@ -18,6 +18,7 @@ export type Program = {
 
 const PROGRAMS = catalog.programs as Program[]
 export const DISCLOSURE = catalog.disclosure as string
+export const CATALOG_UPDATED_AT = catalog.updatedAt as string
 
 const byAlias = new Map<string, Program>()
 for (const p of PROGRAMS) {

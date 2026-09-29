@@ -3,8 +3,9 @@
 import { useState } from 'react'
 
 /**
- * Email capture — the owned-audience asset. Currently posts to a no-op handler;
- * wire `action` to your ESP (Systeme.io / Resend) endpoint when ready.
+ * Email capture — the owned-audience asset. This is a stub: submitting saves
+ * nothing and says so. Send the address to your ESP (Systeme.io / Resend)
+ * endpoint from onSubmit, then replace the message below with a real success state.
  */
 export function EmailCapture({ headline = 'Get the stack that earns', sub = 'One email when a new tool actually beats what you\'re paying for. No noise.' }: { headline?: string; sub?: string }) {
   const [done, setDone] = useState(false)
@@ -14,7 +15,7 @@ export function EmailCapture({ headline = 'Get the stack that earns', sub = 'One
       <h3 className="text-xl font-bold text-ink">{headline}</h3>
       <p className="mx-auto mt-2 max-w-md text-sm text-muted">{sub}</p>
       {done ? (
-        <p className="mt-4 text-sm font-medium text-accent">You're in. Check your inbox.</p>
+        <p className="mt-4 text-sm font-medium text-accent">Email capture is not connected on this site yet, so nothing was saved.</p>
       ) : (
         <form
           className="mx-auto mt-4 flex max-w-md flex-col gap-2 sm:flex-row"
