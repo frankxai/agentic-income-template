@@ -26,11 +26,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # `next lint` was removed in Next.js 16 (the lint script is a no-op/failure
-      # in this stack), so lint is reported but non-blocking. Build is the gate.
       - name: Lint
         run: pnpm lint
-        continue-on-error: true
 
       - name: Build
         run: pnpm build

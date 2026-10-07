@@ -53,7 +53,7 @@ export default function Home() {
           {[
             { n: '01', t: 'Honest comparisons', d: 'Real tool tests in the shape AI search engines cite. The best pick always wins — never the highest payout.' },
             { n: '02', t: 'A shared engine', d: 'One affiliate catalog feeds every post on every site. Join a program once, links go live network-wide.' },
-            { n: '03', t: 'It compounds', d: 'Recurring commissions + an owned email list + content that ranks for years = income that runs without you.' },
+            { n: '03', t: 'It compounds', d: 'Recurring commissions, an owned email list, and posts you keep current. Earnings depend on traffic and reader fit; none are promised.' },
           ].map((c) => (
             <div key={c.n} className="rounded-xl border border-border glass p-5">
               <div className="text-sm font-bold text-accent">{c.n}</div>

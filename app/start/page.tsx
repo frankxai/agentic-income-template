@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { payingPrograms } from '@/lib/affiliate'
+import { CATALOG_UPDATED_AT, payingPrograms } from '@/lib/affiliate'
 import { EmailCapture } from '@/components/EmailCapture'
 
 export const metadata: Metadata = {
@@ -15,15 +15,15 @@ export default function Start() {
     <div className="py-14">
       <h1 className="text-4xl font-extrabold tracking-tight text-ink">Start here</h1>
       <p className="mt-4 max-w-2xl text-lg text-muted">
-        You don't need an audience or a product to begin. You need one honest comparison that ranks, the right
+        You don't need an audience or a product to begin. You need one honest comparison, the right
         recurring-payer tools behind it, and an email list that turns readers into a relationship. Here's the order.
       </p>
 
       <ol className="mt-10 space-y-6">
         {[
           { t: 'Pick one tool category you actually use', d: 'Voice, video, writing, coding — whatever you have real opinions about. Authentic beats broad. You can only recommend honestly what you\'ve touched.' },
-          { t: 'Write the comparison in the citable shape', d: 'Direct answer up top, sortable table, the honest pick, a real FAQ. That structure is what ranks and what AI search engines lift verbatim.' },
-          { t: 'Place recurring-payer links, then build the list', d: 'Link the tools that pay every month — not one-time bounties. Add one email capture. Now every reader is either income or a future relationship.' },
+          { t: 'Write the comparison in the citable shape', d: 'Direct answer up top, sortable table, the honest pick, a real FAQ. The reader gets the answer first and the evidence after it.' },
+          { t: 'Place recurring-payer links, then build the list', d: 'Link the tools that pay every month — not one-time bounties. Add one email capture with clear data handling.' },
         ].map((s, i) => (
           <li key={s.t} className="flex gap-4 rounded-xl border border-border glass p-5">
             <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-accent/15 font-bold text-accent">{i + 1}</span>
@@ -36,7 +36,7 @@ export default function Start() {
       </ol>
 
       <h2 className="mt-14 text-2xl font-bold text-ink">The recurring-payer shortlist</h2>
-      <p className="mt-2 max-w-2xl text-muted">The programs worth building around — ranked. Recurring commissions are what make the income passive.</p>
+      <p className="mt-2 max-w-2xl text-muted">The programs worth building around, ranked by recurring potential. This starter catalog is dated {CATALOG_UPDATED_AT}: confirm each program&apos;s current terms before you publish or link.</p>
       <div className="mt-6 overflow-hidden rounded-xl border border-border glass">
         <table className="w-full text-sm">
           <thead><tr className="text-left text-muted">
@@ -58,7 +58,7 @@ export default function Start() {
         <Link href="/blog" className="font-medium text-accent hover:underline">See the comparisons in action →</Link>
       </div>
 
-      <EmailCapture headline="Want the build order as a checklist?" sub="I'll send the exact step-by-step I use to ship a ranking comparison in an afternoon." />
+      <EmailCapture headline="Want the build order as a checklist?" sub="The three steps above as a checklist." />
     </div>
   )
 }
