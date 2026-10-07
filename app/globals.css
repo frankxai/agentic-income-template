@@ -43,3 +43,16 @@ body {
 .prose-ai li { margin: 0.4rem 0; }
 .prose-ai code { background: var(--color-surface); border: 1px solid var(--color-border); padding: 0.1rem 0.4rem; border-radius: 0.35rem; font-size: 0.9em; }
 .prose-ai strong { color: #fff; }
+
+/* mobile nav strip: right-edge fade signals there is more to scroll */
+.mobile-nav-fade {
+  -webkit-mask-image: linear-gradient(to right, black calc(100% - 2.5rem), rgba(0,0,0,0.2));
+  mask-image: linear-gradient(to right, black calc(100% - 2.5rem), rgba(0,0,0,0.2));
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+html { -webkit-text-size-adjust: 100%; }
